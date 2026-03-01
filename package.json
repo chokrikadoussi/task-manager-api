@@ -2,7 +2,7 @@
   "name": "task-manager-api",
   "version": "1.0.0",
   "description": "Task Manager API built with Express, TypeScript, and Prisma",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
@@ -10,7 +10,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint .",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,md}",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
