@@ -1,7 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "."
+    "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "moduleDetection": "auto",
+    "verbatimModuleSyntax": false
   },
   "include": ["src", "tests"],
   "exclude": ["dist", "node_modules"]
