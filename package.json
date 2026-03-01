@@ -4,7 +4,7 @@
   "description": "Task Manager API built with Express, TypeScript, and Prisma",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -34,12 +34,16 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcrypt-ts": "^8.0.1",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.3",
     "@types/pg": "^8.18.0",
