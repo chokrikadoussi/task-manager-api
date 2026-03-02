@@ -127,4 +127,35 @@ router.patch('/:id', authenticate, async (req: Request, res: Response) => {
   }
 });
 
+router.delete('/:id', authenticate, async (req: Request, res: Response) => {
+  const taskId = Number(req.params.id);
+
+  if (isNaN(taskId)) {
+    res.status(400).json({ message: 'Invalid task ID' });
+    return;
+  }
+
+  try {
+    const userId = req.userId!;
+    const task = await prisma.task.findUnique({ where: { id: taskId } });
+    if (!task) {
+      res.status(404).json({ message: 'Task not found' });
+      return;
+    }
+
+    if (userId !== task.assignedToId) {
+      res
+        .status(403)
+        .json({ message: 'Forbidden: You can only delete your own tasks' });
+      return;
+    }
+
+    await prisma.task.delete({ where: { id: taskId } });
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    res.status(500).json({ message: 'Error deleting task' });
+  }
+});
+
 export default router;
