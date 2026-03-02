@@ -5,7 +5,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "moduleDetection": "auto",
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "esModuleInterop": true
   },
   "include": ["src", "tests"],
   "exclude": ["dist", "node_modules"]

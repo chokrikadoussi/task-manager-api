@@ -10,5 +10,9 @@ export default {
   transform: {
     ...tsJestTransformCfg,
   },
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  },
   collectCoverageFrom: ["src/**/*.ts", "!src/generated/**"],
+  transformIgnorePatterns: ["node_modules/(?!bcrypt-ts)"],
 };
