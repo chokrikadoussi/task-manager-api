@@ -2,8 +2,10 @@ import express from 'express';
 import { hashSync, compare } from 'bcrypt-ts';
 import { prisma } from './lib/prisma.js';
 import jwt from 'jsonwebtoken';
+import taskRouter from './routes/task.route.js';
 import 'dotenv/config';
 const app = express();
+
 
 app.use(express.json());
 
@@ -74,5 +76,7 @@ app.post('/auth/login', async (req, res) => {
     res.status(500).json({ message: 'Error during login' });
   }
 });
+
+app.use('/tasks', taskRouter);
 
 export default app;
