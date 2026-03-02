@@ -10,6 +10,8 @@ const TaskSchema = z.object({
   description: z.string().optional(),
 });
 
+const StatusSchema = z.enum(['pending', 'in_progress', 'completed']);
+
 router.post('/', authenticate, async (req: Request, res: Response) => {
   const result = TaskSchema.safeParse(req.body);
   if (!result.success) {
@@ -39,6 +41,41 @@ router.post('/', authenticate, async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error creating task' });
     return;
   }
+});
+
+router.get('/', authenticate, async (req: Request, res: Response) => {
+
+    const { status, assignedToId, page, limit } = req.query;
+    const pageNumber: number = Number(page) || 1;
+    const limitNumber: number = Number(limit) || 10;
+
+    if (status && !StatusSchema.safeParse(status).success) {
+        res.status(400).json({ message: 'Invalid status value' });
+        return;
+    }
+
+    const parsedAssignedToId = assignedToId ? Number(assignedToId) : undefined;
+
+    const where = {
+        ...(status ? { status: status as string } : {}),
+        ...(parsedAssignedToId && !isNaN(parsedAssignedToId) ? { assignedToId: parsedAssignedToId } : {}),
+    };
+
+    try {
+        const [tasks, total] = await prisma.$transaction([
+            prisma.task.findMany({
+                where,
+                skip: (pageNumber - 1) * limitNumber,
+                take: limitNumber,
+            }),
+            prisma.task.count({ where }),
+        ]);
+
+        res.status(200).json({ data: tasks, total, page: pageNumber, limit: limitNumber });
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ message: 'Error fetching tasks' });
+    }
 });
 
 export default router;
