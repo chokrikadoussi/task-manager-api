@@ -19,6 +19,8 @@ model User {
   password String
   name  String?
   tasks Task[]
+
+  @@index([email])
 }
 
 model Task {
@@ -28,4 +30,7 @@ model Task {
   status String  @default("pending")
   assignedTo User? @relation(fields: [assignedToId], references: [id])
   assignedToId Int?
+
+  @@index([status])
+  @@index([assignedToId])
 }
