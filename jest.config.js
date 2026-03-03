@@ -13,6 +13,7 @@ export default {
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
+  testPathIgnorePatterns: ["/node_modules/", "/tests/e2e/"],
   collectCoverageFrom: ["src/**/*.ts", "!src/generated/**"],
   transformIgnorePatterns: ["node_modules/(?!bcrypt-ts)"],
 };
