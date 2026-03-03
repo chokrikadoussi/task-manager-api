@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { NextFunction, Request, Response } from 'express';
 import authenticate from '../middleware/auth.middleware.js';
+import validate from '../middleware/validate.js';
 import { prisma } from '../lib/prisma.js';
 import AppError from '../lib/AppError.js';
 import { Router } from 'express';
@@ -20,15 +21,9 @@ const TaskUpdateSchema = TaskSchema.partial().extend({
 router.post(
   '/',
   authenticate,
+  validate(TaskSchema),
   async (req: Request, res: Response, next: NextFunction) => {
-    // TODO: Zod validation middleware
-    const result = TaskSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ error: result.error });
-      return;
-    }
-
-    const { title, description } = result.data;
+    const { title, description } = req.body;
 
     try {
       const task = await prisma.task.create({
@@ -54,7 +49,6 @@ router.get(
     const pageNumber: number = Number(page) || 1;
     const limitNumber: number = Number(limit) || 10;
 
-    // TODO: Zod validation middleware
     if (status && !StatusSchema.safeParse(status).success) {
       res.status(400).json({ message: 'Invalid status value' });
       return;
@@ -91,6 +85,7 @@ router.get(
 router.patch(
   '/:id',
   authenticate,
+  validate(TaskUpdateSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     const taskId = Number(req.params.id);
 
@@ -98,14 +93,7 @@ router.patch(
       throw new AppError(400, 'Invalid task ID');
     }
 
-    // TODO: Zod validation middleware
-    const result = TaskUpdateSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ error: result.error });
-      return;
-    }
-
-    const { title, description, status } = result.data;
+    const { title, description, status } = req.body;
     const userId = req.userId!;
 
     try {
