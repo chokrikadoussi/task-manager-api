@@ -48,6 +48,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/', (_req, res) => {
   res.send('Hello, World!');
 });
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use('/auth', authRouter);
 app.use('/tasks', taskRouter);
 
