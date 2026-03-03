@@ -7,6 +7,18 @@ jest.mock('bcrypt-ts', () => ({
   compare: jest.fn().mockResolvedValue(true),
 }));
 
+jest.mock('../src/generated/prisma/client', () => ({
+  Prisma: {
+    PrismaClientKnownRequestError: class extends Error {
+      code: string;
+      constructor(message: string, { code }: { code: string }) {
+        super(message);
+        this.code = code;
+      }
+    },
+  },
+}));
+
 jest.mock('../src/lib/prisma', () => ({
   prisma: {
     task: {
