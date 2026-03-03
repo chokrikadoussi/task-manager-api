@@ -3,17 +3,24 @@ import { hashSync, compare } from 'bcrypt-ts';
 import { prisma } from './lib/prisma.js';
 import jwt from 'jsonwebtoken';
 import taskRouter from './routes/task.route.js';
+import errorHandler from './middleware/errorHandler.js';
+import morgan from 'morgan';
+import logger from './lib/logger.js';
 import 'dotenv/config';
 const app = express();
 
-
 app.use(express.json());
+app.use(
+  morgan('combined', {
+    stream: { write: (message) => logger.http(message.trim()) },
+  })
+);
 
 app.get('/', (_req, res) => {
   res.send('Hello, World!');
 });
 
-app.post('/auth/register', async (req, res) => {
+app.post('/auth/register', async (req, res, next) => {
   const {
     email,
     password,
@@ -38,12 +45,11 @@ app.post('/auth/register', async (req, res) => {
 
     res.status(201).json({ id: user.id, email: user.email, name: user.name });
   } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Error creating user' });
+    next(error);
   }
 });
 
-app.post('/auth/login', async (req, res) => {
+app.post('/auth/login', async (req, res, next) => {
   const { email, password }: { email: string; password: string } = req.body;
 
   if (!email || !password) {
@@ -72,11 +78,11 @@ app.post('/auth/login', async (req, res) => {
     const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn });
     res.status(200).json({ token });
   } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ message: 'Error during login' });
+    next(error);
   }
 });
 
 app.use('/tasks', taskRouter);
+app.use(errorHandler);
 
 export default app;
