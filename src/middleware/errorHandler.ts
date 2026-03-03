@@ -4,7 +4,6 @@ import { ZodError } from 'zod';
 import AppError from '../lib/AppError.js';
 import logger from '../lib/logger.js';
 
-
 const errorHandler = (
   err: Error,
   _req: Request,
