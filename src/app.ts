@@ -6,6 +6,8 @@ import taskRouter from './routes/task.route.js';
 import errorHandler from './middleware/errorHandler.js';
 import morgan from 'morgan';
 import logger from './lib/logger.js';
+import limiter, { authLimiter } from './lib/rateLimiter.js';
+import helmet from 'helmet';
 import 'dotenv/config';
 const app = express();
 
@@ -15,12 +17,14 @@ app.use(
     stream: { write: (message) => logger.http(message.trim()) },
   })
 );
+app.use(limiter);
+app.use(helmet());
 
 app.get('/', (_req, res) => {
   res.send('Hello, World!');
 });
 
-app.post('/auth/register', async (req, res, next) => {
+app.post('/auth/register', authLimiter, async (req, res, next) => {
   const {
     email,
     password,
@@ -49,7 +53,7 @@ app.post('/auth/register', async (req, res, next) => {
   }
 });
 
-app.post('/auth/login', async (req, res, next) => {
+app.post('/auth/login', authLimiter, async (req, res, next) => {
   const { email, password }: { email: string; password: string } = req.body;
 
   if (!email || !password) {
