@@ -2,6 +2,9 @@
 
 [![CI](https://github.com/chokrikadoussi/task-manager-api/actions/workflows/ci.yml/badge.svg)](https://github.com/chokrikadoussi/task-manager-api/actions/workflows/ci.yml)
 
+**Live demo:** https://task-manager-api-fkmv.onrender.com
+**API Docs:** https://task-manager-api-fkmv.onrender.com/api-docs
+
 A RESTful API for task management built with Node.js, Express, TypeScript, Prisma and PostgreSQL. Features JWT authentication, role-based task ownership, request validation, structured logging, and security hardening.
 
 ## Table of Contents
