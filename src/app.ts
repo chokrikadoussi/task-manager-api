@@ -8,10 +8,27 @@ import morgan from 'morgan';
 import logger from './lib/logger.js';
 import limiter, { authLimiter } from './lib/rateLimiter.js';
 import helmet from 'helmet';
+import cors from 'cors';
 import 'dotenv/config';
 const app = express();
 
 app.use(express.json());
+app.use((req, res, next) => {
+  if (
+    req.headers['x-forwarded-proto'] !== 'https' &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    res.redirect(301, `https://${req.headers.host}${req.url}`);
+    return;
+  }
+  next();
+});
+
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || '*',
+  })
+);
 app.use(
   morgan('combined', {
     stream: { write: (message) => logger.http(message.trim()) },
